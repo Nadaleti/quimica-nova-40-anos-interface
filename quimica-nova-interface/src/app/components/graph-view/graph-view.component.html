@@ -1,0 +1,93 @@
+<div class="container">
+    <form [formGroup]="filterForm">
+        <mat-card>
+            <!-- Campo de busca por keyword -->
+            <mat-form-field class="keyword-filter" appearance="outline">
+                <mat-label>Palavra-chave</mat-label>
+                <input matInput formControlName="keyword" placeholder="Pesquise por uma palavra-chave...">
+                <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
+            </mat-form-field>
+
+            <!-- Campo para seleção de período de busca -->
+            <mat-form-field class="period-filter" appearance="outline">
+                <mat-label>Selecione um período</mat-label>
+                <mat-select formControlName="period">
+                    <mat-option value="0">Todos os anos</mat-option>
+                    <mat-option value="1">1995 - 2000</mat-option>
+                    <mat-option value="2">2001 - 2005</mat-option>
+                    <mat-option value="3">2006 - 2010</mat-option>
+                    <mat-option value="4">2011 - 2015</mat-option>
+                    <mat-option value="5">2015 - 2017</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- <hr> -->
+            <!-- Campo para seleção do tipo de visualização de keywords relacionadas -->
+            <!-- <div class="visualization-container">
+                <label>Selecione a forma de visualização de palavras-chave</label>
+                <mat-radio-group class="radio-group" formControlName="visualizationType">
+                    <mat-radio-button color="primary" value="community">Comunidade</mat-radio-button>
+                    <mat-radio-button color="primary" value="neighbors">Keywords relacionadas</mat-radio-button>
+                </mat-radio-group>
+            </div> -->
+        </mat-card>
+        <mat-card *ngIf="filterForm.controls['keyword'].value != ''">
+            <div class="visualization-container">
+                <label>Selecione a forma de visualização de palavras-chave:</label>
+                <mat-radio-group class="radio-group" formControlName="visualizationType">
+                    <mat-radio-button color="primary" value="community">Comunidade</mat-radio-button>
+                    <mat-radio-button color="primary" value="neighbors">Keywords relacionadas</mat-radio-button>
+                    <mat-slider formControlName="neighborsNumber" [min]="1" [max]="3" [thumbLabel]="true" color="primary"></mat-slider>
+                </mat-radio-group>
+            </div>
+        </mat-card>
+    </form>
+    <mat-card onload="draw()" id="visualization">
+        something
+    </mat-card>
+</div>
+
+<script type="text/javascript">
+    var viz;
+
+    function draw() {
+        var config = {
+            container_id: "visualization",
+            server_url: "bolt://localhost:7687",
+            server_user: "neo4j",
+            server_password: "1234",
+            labels: {
+                "Keyword": {
+                    "caption": "keyword",
+                    "size": "numOccurrences",
+                    "community": "community"
+                }
+            },
+            relationships: {
+                "Rel": {
+                    //"thickness": "weight",
+                    "caption": false
+                }
+            },
+            
+            // Exibir todos os nós e relacionamentos
+            //initial_cypher: "MATCH (n)-[r:Rel]-(m) return *"
+            
+            // Exibir os nós e relaionamentos da comunidade 76
+            //initial_cypher: "MATCH (n)-[r:Rel]-(m) WHERE n.community = 76 AND m.community = 76 RETURN *"
+            
+            // Exibir os pares que nós que mais se relacionam
+            //initial_cypher: "MATCH (n)-[r]-(m) WITH n, m, COLLECT(r) AS rels ORDER BY SIZE(rels) DESC RETURN n, rels LIMIT 14;"
+            
+            // Exibir os nós que possuem são citados mais vezes
+            //initial_cypher: "MATCH (n) RETURN n ORDER BY n.numOccurrences DESC LIMIT 10"
+           
+            // Exibir os nós e relacionamentos das duas maiores comunidades
+            initial_cypher: "MATCH (n:Keyword) n.keyword CONTAINS \"Viagra\" WITH n.community as community, COUNT(n.community) AS numNodesCommuniy ORDER BY numNodesCommuniy DESC LIMIT 2 MATCH (n:Keyword {community: community})-[r]-() return n, r"
+        
+        };
+
+        viz = new NeoVis.default(config);
+        viz.render();
+    }
+</script>

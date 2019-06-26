@@ -1,0 +1,33 @@
+mat-sidenav-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    mat-sidenav {
+        background-color: #444;
+        color: white;
+        padding: 10px 20px;
+        width: 250px;
+
+        button {
+            color: #777;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+    }
+
+    mat-sidenav-content {
+        background-color: #d2d5da;
+
+        button {
+            border-top-left-radius: 0px;
+            border-bottom-left-radius: 0px;
+            position: absolute;
+            top: 5px;
+            z-index: 2;
+        }
+    }
+}

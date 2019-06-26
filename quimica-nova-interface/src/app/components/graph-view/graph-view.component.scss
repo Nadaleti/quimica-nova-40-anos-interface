@@ -1,0 +1,50 @@
+mat-card {
+    margin-bottom: 20px;
+    background-color: #e4e7eb;
+
+    .keyword-filter {
+        width: 60%;
+        margin-right: 2%;
+    }
+
+    .period-filter {
+        width: 38%;
+    }
+}
+
+:host ::ng-deep .mat-form-field-wrapper{
+    padding-bottom: 0;
+}
+
+.container {
+    padding: 25px 80px;
+}
+
+hr {
+    background-color: #999;
+}
+
+// Visualização de palavras-chave
+.visualization-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+
+    .radio-group {
+        display: flex;
+        flex-direction: row;
+        margin-top: 10px;
+
+        mat-radio-button {
+            margin-top: 10px;
+        }
+
+        mat-slider {
+            width: 65%;
+        }
+
+        & :nth-child(n) {
+            margin-right: 15px;
+        }
+    }
+}

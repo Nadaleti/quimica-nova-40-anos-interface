@@ -1,0 +1,19 @@
+<mat-sidenav-container>
+    <mat-sidenav #sidenav [opened]="true" (openedStart)="opened = !opened" (closedStart)="opened = !opened" [mode]="mobileQuery.matches ? 'over' : 'side'">
+        <h1 class="mat-h1">Química Nova</h1>
+        <p class="mat-body">40 Anos</p>
+        <button mat-button (click)="sidenav.toggle()" [disableRipple]="true">
+            <mat-icon>
+                menu
+            </mat-icon>
+        </button>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <button mat-raised-button *ngIf="!opened" (click)="sidenav.toggle()">
+            <mat-icon>
+                menu
+            </mat-icon>
+        </button>
+        <graph-view></graph-view>
+    </mat-sidenav-content>
+</mat-sidenav-container>
