@@ -109,12 +109,6 @@ export class GraphViewComponent implements OnInit {
                     if (first && last) {
                         this.query += ` WHERE all(r in relationships(path) WHERE ${first} <= r.year_src <= ${last} AND ${first} <= r.year_dst <= ${last}) `;
                     }
-
-                    if (filters.communityVisualization) {
-                        if (!first && !last) { this.query += ' WHERE ' }
-                        else { this.query += ' AND ' }
-                        this.query += ' k1.community = k0.community '
-                    }
                     
                     this.query += 'RETURN *';
 
