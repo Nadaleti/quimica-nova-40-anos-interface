@@ -1,5 +1,5 @@
 <mat-sidenav-container>
-    <mat-sidenav #sidenav [opened]="true" (openedStart)="opened = !opened" (closedStart)="opened = !opened" [mode]="mobileQuery.matches ? 'over' : 'side'">
+    <mat-sidenav #sidenav [opened]="false" (openedStart)="opened = !opened" (closedStart)="opened = !opened" [mode]="mobileQuery.matches ? 'over' : 'side'">
         <h1 class="mat-h1">Química Nova</h1>
         <p class="mat-body">40 Anos</p>
         <button mat-button (click)="sidenav.toggle()" [disableRipple]="true">

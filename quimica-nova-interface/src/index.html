@@ -12,9 +12,57 @@
 
     <!-- Neovis.js -->
     <script src="https://rawgit.com/neo4j-contrib/neovis.js/master/dist/neovis.js"></script>
+
+    <script type="text/javascript">
+        let viz;
+    
+        function draw() {
+            let config = {
+                container_id: "visualization",
+                server_url: "bolt://localhost:7687",
+                server_user: "neo4j",
+                server_password: "4321",
+                labels: {
+                    "Keyword": {
+                        "caption": "keyword",
+                        "size": "numOccurrences",
+                        "community": "community"
+                    }
+                },
+                relationships: {
+                    "RELATED": {
+                        //"thickness": "weight",
+                        "caption": false
+                    }
+                },
+               
+                initial_cypher: "match (k0:Keyword)-[r:RELATED]-(k1:Keyword) return k0, r, k1 limit 10"  
+            };
+    
+            viz = new NeoVis.default(config);
+            viz.render();
+
+            // if (Object.entries(viz._nodes).length === 0 && viz._nodes.constructor === Object) {
+            //     document.getElementById('#empty-result').style.display = 'block';
+            // } else {
+            //     document.getElementById('#empty-result').style.display = 'none';
+            // }
+        }
+
+        function filter() {
+            viz.renderWithCypher(document.getElementById('communityAlg').value);
+            viz.renderWithCypher(document.getElementById('query').value);
+
+            // if (Object.entries(viz._nodes).length === 0 && viz._nodes.constructor === Object) {
+            //     document.getElementById('#empty-result').style.display = 'block';
+            // } else {
+            //     document.getElementById('#empty-result').style.display = 'none';
+            // }
+        }
+    </script>
 </head>
 
-<body>
+<body onload="draw()">
     <app-root></app-root>
 </body>
 

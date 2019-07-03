@@ -48,3 +48,24 @@ hr {
         }
     }
 }
+
+.search-button {
+    margin-top: 5px;
+}
+
+#visualization {
+    height: 500px;
+}
+
+#loading {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.3);
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

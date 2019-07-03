@@ -1,4 +1,11 @@
+<!-- <div id="loading">
+    <mat-spinner></mat-spinner>
+</div> -->
+
 <div class="container">
+    <input type="hidden" id="query" value={{query}}>
+    <input type="hidden" id="communityAlg" value={{communityAlg}}>
+
     <form [formGroup]="filterForm">
         <mat-card>
             <!-- Campo de busca por keyword -->
@@ -17,7 +24,7 @@
                     <mat-option value="2">2001 - 2005</mat-option>
                     <mat-option value="3">2006 - 2010</mat-option>
                     <mat-option value="4">2011 - 2015</mat-option>
-                    <mat-option value="5">2015 - 2017</mat-option>
+                    <mat-option value="5">2016 - 2017</mat-option>
                 </mat-select>
             </mat-form-field>
 
@@ -30,6 +37,7 @@
                     <mat-radio-button color="primary" value="neighbors">Keywords relacionadas</mat-radio-button>
                 </mat-radio-group>
             </div> -->
+            <button *ngIf="filterForm.controls['keyword'].value == ''" mat-raised-button class="search-button" color="primary" onclick="filter()">Pesquisar</button>
         </mat-card>
         <mat-card *ngIf="filterForm.controls['keyword'].value != ''">
             <div class="visualization-container">
@@ -40,54 +48,11 @@
                     <mat-slider formControlName="neighborsNumber" [min]="1" [max]="3" [thumbLabel]="true" color="primary"></mat-slider>
                 </mat-radio-group>
             </div>
+            <button mat-raised-button class="search-button" color="primary" onclick="filter()">Pesquisar</button>
         </mat-card>
     </form>
-    <mat-card onload="draw()" id="visualization">
-        something
+    <mat-card>
+        <!-- <p id="empty-result">Nenhum resultado encontrado...</p> -->
+        <div id="visualization"></div>
     </mat-card>
 </div>
-
-<script type="text/javascript">
-    var viz;
-
-    function draw() {
-        var config = {
-            container_id: "visualization",
-            server_url: "bolt://localhost:7687",
-            server_user: "neo4j",
-            server_password: "1234",
-            labels: {
-                "Keyword": {
-                    "caption": "keyword",
-                    "size": "numOccurrences",
-                    "community": "community"
-                }
-            },
-            relationships: {
-                "Rel": {
-                    //"thickness": "weight",
-                    "caption": false
-                }
-            },
-            
-            // Exibir todos os nós e relacionamentos
-            //initial_cypher: "MATCH (n)-[r:Rel]-(m) return *"
-            
-            // Exibir os nós e relaionamentos da comunidade 76
-            //initial_cypher: "MATCH (n)-[r:Rel]-(m) WHERE n.community = 76 AND m.community = 76 RETURN *"
-            
-            // Exibir os pares que nós que mais se relacionam
-            //initial_cypher: "MATCH (n)-[r]-(m) WITH n, m, COLLECT(r) AS rels ORDER BY SIZE(rels) DESC RETURN n, rels LIMIT 14;"
-            
-            // Exibir os nós que possuem são citados mais vezes
-            //initial_cypher: "MATCH (n) RETURN n ORDER BY n.numOccurrences DESC LIMIT 10"
-           
-            // Exibir os nós e relacionamentos das duas maiores comunidades
-            initial_cypher: "MATCH (n:Keyword) n.keyword CONTAINS \"Viagra\" WITH n.community as community, COUNT(n.community) AS numNodesCommuniy ORDER BY numNodesCommuniy DESC LIMIT 2 MATCH (n:Keyword {community: community})-[r]-() return n, r"
-        
-        };
-
-        viz = new NeoVis.default(config);
-        viz.render();
-    }
-</script>

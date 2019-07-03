@@ -7,9 +7,10 @@ import {
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    MatProgressSpinnerModule,
     MatSelectModule,
     MatRadioModule,
-    MatSliderModule,
+    MatSliderModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 
@@ -32,6 +33,7 @@ import { ReactiveFormsModule } from '@angular/forms';
         MatFormFieldModule,
         MatIconModule,
         MatInputModule,
+        MatProgressSpinnerModule,
         MatRadioModule,
         MatSelectModule,
         MatSidenavModule,
