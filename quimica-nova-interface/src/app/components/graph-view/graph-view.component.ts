@@ -47,13 +47,16 @@ export class GraphViewComponent implements OnInit {
             .pipe(
                 debounceTime(500),
                 tap(() => {
-                    const communityVisualization = this.formControls['visualizationType'].value == 'community' ? true : false;
+                    const communityVisualization = this.filterForm.controls['keyword'].value !== '' &&
+                                                    this.formControls['visualizationType'].value == 'community' ? true : false;
+                    const neighborsVisualization = this.filterForm.controls['keyword'].value !== '' &&
+                                                    this.formControls['visualizationType'].value == 'neighbors' ? true : false;
 
                     let filters = new FiltersModel(
                         this.formControls['keyword'].value,
                         this.formControls['period'].value,
                         communityVisualization,
-                        !communityVisualization,
+                        neighborsVisualization,
                         this.formControls['neighborsNumber'].value
                     );
 
@@ -91,11 +94,21 @@ export class GraphViewComponent implements OnInit {
 
                     this.communityAlg += 'RETURN id(k0) as source, id(k1) as target\', {graph: \'cypher\', write:true})';
 
+                    this.query = 'MATCH ';
+
                     // Filtra os resultados de acordo com o que foi preenchido
-                    this.query = 'MATCH path = (k0';
+                    if (filters.communityVisualization) {
+                        this.query += `(k { keyword: '${filters.keyword}' }), `
+                    }
+
+                    this.query += 'path = (k0';
                     
                     if (filters.keyword !== '') {
-                        this.query += ` { keyword: '${filters.keyword}' } `;
+                        if (filters.communityVisualization) {
+                            this.query += '{ community: k.community }'
+                        } else {
+                            this.query += ` { keyword: '${filters.keyword}' }`;
+                        }
                     }
 
                     this.query += ')-[r';
@@ -104,7 +117,11 @@ export class GraphViewComponent implements OnInit {
                         this.query += `*0..${filters.neighborsNumber}`;
                     }
 
-                    this.query += ']-(k1)';
+                    this.query += ']-(k1';
+                    if (filters.communityVisualization) {
+                        this.query += '{ community: k.community }'
+                    }
+                    this.query += ') ';
 
                     if (first && last) {
                         this.query += ` WHERE all(r in relationships(path) WHERE ${first} <= r.year_src <= ${last} AND ${first} <= r.year_dst <= ${last}) `;
