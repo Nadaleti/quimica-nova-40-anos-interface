@@ -26,6 +26,9 @@ export class GraphViewComponent implements OnInit {
             neighborsNumber: ['2', { disabled: true }]
         });
 
+        this.communityAlg = 'CALL algo.louvain(\'MATCH (k:Keyword) RETURN id(k) as id\', \'MATCH (k0)-[r]-(k1) RETURN id(k0) as source, id(k1) as target\', {graph: \'cypher\', write:true})';
+        this.query = 'MATCH path = (k0)-[r]-(k1) WHERE k1.community = k0.community RETURN *';
+
         // Fazer requisição geral logo que o componente for criado
 
         this.filterForm.controls['neighborsNumber'].disable();
@@ -39,16 +42,6 @@ export class GraphViewComponent implements OnInit {
                     }
                 }
             );
-        
-        // this.filterForm.controls['keyword'].valueChanges.pipe(
-        //     debounceTime(400),
-        //     tap((keyword) => console.log(keyword))
-        // ).subscribe();
-
-        // this.filterForm.controls['neighborsNumber'].valueChanges.pipe(
-        //     debounceTime(300),
-        //     tap(() => console.log('printou'))
-        // ).subscribe();
 
         this.filterForm.valueChanges
             .pipe(
@@ -113,16 +106,14 @@ export class GraphViewComponent implements OnInit {
 
                     this.query += ']-(k1)';
 
-                    if (filters.communityVisualization) {
-                        this.query += `, (k { keyword: '${filters.keyword}' })`
-                    }
-
                     if (first && last) {
                         this.query += ` WHERE all(r in relationships(path) WHERE ${first} <= r.year_src <= ${last} AND ${first} <= r.year_dst <= ${last}) `;
                     }
 
                     if (filters.communityVisualization) {
-                        this.query += 'AND k1.community = k0.community '
+                        if (!first && !last) { this.query += ' WHERE ' }
+                        else { this.query += ' AND ' }
+                        this.query += ' k1.community = k0.community '
                     }
                     
                     this.query += 'RETURN *';
