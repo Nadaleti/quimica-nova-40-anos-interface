@@ -1,7 +1,6 @@
-<!-- <div id="loading">
+<div id="loading">
     <mat-spinner></mat-spinner>
-</div> -->
-
+</div>
 <div class="container">
     <input type="hidden" id="query" value={{query}}>
     <input type="hidden" id="communityAlg" value={{communityAlg}}>
@@ -44,15 +43,15 @@
                 <label>Selecione a forma de visualização de palavras-chave:</label>
                 <mat-radio-group class="radio-group" formControlName="visualizationType">
                     <mat-radio-button color="primary" value="community">Comunidade</mat-radio-button>
-                    <mat-radio-button color="primary" value="neighbors">Keywords relacionadas</mat-radio-button>
+                    <mat-radio-button color="primary" value="neighbors">Palavras relacionadas</mat-radio-button>
                     <mat-slider formControlName="neighborsNumber" [min]="1" [max]="3" [thumbLabel]="true" color="primary"></mat-slider>
                 </mat-radio-group>
             </div>
             <button mat-raised-button class="search-button" color="primary" onclick="filter()">Pesquisar</button>
         </mat-card>
     </form>
-    <mat-card>
-        <!-- <p id="empty-result">Nenhum resultado encontrado...</p> -->
+    <mat-card style="position: relative">
+        <p id="empty-result">Nenhum resultado encontrado...</p>
         <div id="visualization"></div>
     </mat-card>
 </div>

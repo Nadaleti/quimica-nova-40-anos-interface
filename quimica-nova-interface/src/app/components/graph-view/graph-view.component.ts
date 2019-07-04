@@ -27,7 +27,7 @@ export class GraphViewComponent implements OnInit {
         });
 
         this.communityAlg = 'CALL algo.louvain(\'MATCH (k:Keyword) RETURN id(k) as id\', \'MATCH (k0)-[r]-(k1) RETURN id(k0) as source, id(k1) as target\', {graph: \'cypher\', write:true})';
-        this.query = 'MATCH path = (k0)-[r]-(k1) WHERE k1.community = k0.community RETURN *';
+        this.query = 'MATCH path = (k0)-[r]-(k1) RETURN * LIMIT 1000';
 
         // Fazer requisição geral logo que o componente for criado
 

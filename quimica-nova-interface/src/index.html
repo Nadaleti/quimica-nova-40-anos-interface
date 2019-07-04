@@ -15,6 +15,7 @@
 
     <script type="text/javascript">
         let viz;
+        let recordCount;
     
         function draw() {
             let config = {
@@ -36,28 +37,38 @@
                     }
                 },
                
-                initial_cypher: "match (k0:Keyword)-[r:RELATED]-(k1:Keyword) return k0, r, k1 limit 10"  
+                initial_cypher: document.getElementById('query').value 
             };
     
             viz = new NeoVis.default(config);
             viz.render();
 
-            // if (Object.entries(viz._nodes).length === 0 && viz._nodes.constructor === Object) {
-            //     document.getElementById('#empty-result').style.display = 'block';
-            // } else {
-            //     document.getElementById('#empty-result').style.display = 'none';
-            // }
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('empty-result').style.display = 'none';
+
+            // Quando termina a consulta, finaliza o 'load' e verifica se houve resultado ou não
+            recordCount = -1;
+            viz.registerOnEvent('completed', (e) => {
+                if (recordCount < 0) {
+                    recordCount = e.record_count;
+                }
+
+                if (recordCount == 0) {
+                    document.getElementById('empty-result').style.display = 'block';
+                }
+
+                document.getElementById('loading').style.display = 'none';
+            });
         }
 
         function filter() {
             viz.renderWithCypher(document.getElementById('communityAlg').value);
             viz.renderWithCypher(document.getElementById('query').value);
 
-            // if (Object.entries(viz._nodes).length === 0 && viz._nodes.constructor === Object) {
-            //     document.getElementById('#empty-result').style.display = 'block';
-            // } else {
-            //     document.getElementById('#empty-result').style.display = 'none';
-            // }
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('empty-result').style.display = 'none';
+
+            recordCount = -1;
         }
     </script>
 </head>
