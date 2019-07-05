@@ -15,10 +15,11 @@
 
     <script type="text/javascript">
         let viz;
-        let recordCount;
+        let isCommunityAlg = false;
     
         function draw() {
-            let config = {
+            // Configuração do Neovis.js
+            const config = {
                 container_id: "visualization",
                 server_url: "bolt://localhost:7687",
                 server_user: "neo4j",
@@ -37,7 +38,7 @@
                     }
                 },
                
-                initial_cypher: document.getElementById('query').value 
+                initial_cypher: document.getElementById('communityAlg').value 
             };
     
             viz = new NeoVis.default(config);
@@ -46,30 +47,32 @@
             document.getElementById('loading').style.display = 'block';
             document.getElementById('empty-result').style.display = 'none';
 
-            // Quando termina a consulta, finaliza o 'load' e verifica se houve resultado ou não
-            recordCount = -1;
+            // Escuta o evento de 'complete' da query
             viz.registerOnEvent('completed', (e) => {
-                if (recordCount < 0) {
-                    recordCount = e.record_count;
-                }
-
-                if (recordCount == 0) {
-                    document.getElementById('empty-result').style.display = 'block';
-                    document.getElementById('loading').style.display = 'none'
+                if (isCommunityAlg) {
+                    // Se o que terminou de executar for o algoritmo de comunidade, executa a query de fato
+                    isCommunityAlg = false;
+                    viz.renderWithCypher(document.getElementById('query').value);
                 } else {
-                    setInterval(() => document.getElementById('loading').style.display = 'none', 10000);
+                    // Caso seja a query, verifica se houve resultado
+                    if (e.record_count == 0) {
+                        // Se não houver resultado, exibe mensagem de que não foi encontrado resultado
+                        document.getElementById('empty-result').style.display = 'block';
+                        document.getElementById('loading').style.display = 'none'
+                    } else {
+                        // Caso haja resultado, continua o load até o carregamento visual do grafo
+                        setInterval(() => document.getElementById('loading').style.display = 'none', 10000);
+                    }
                 }
             });
         }
 
         function filter() {
             viz.renderWithCypher(document.getElementById('communityAlg').value);
-            viz.renderWithCypher(document.getElementById('query').value);
+            isCommunityAlg = true;
 
             document.getElementById('loading').style.display = 'block';
             document.getElementById('empty-result').style.display = 'none';
-
-            recordCount = -1;
         }
     </script>
 </head>

@@ -19,6 +19,7 @@ export class GraphViewComponent implements OnInit {
     constructor(private formBuilder: FormBuilder) {}
 
     ngOnInit() {
+        // Construindo o formulário reativo
         this.filterForm = this.formBuilder.group({
             keyword: [''],
             period: ['0'],
@@ -26,11 +27,11 @@ export class GraphViewComponent implements OnInit {
             neighborsNumber: ['2', { disabled: true }]
         });
 
-        this.communityAlg = 'CALL algo.louvain(\'MATCH (k:Keyword) RETURN id(k) as id\', \'MATCH (k0)-[r]-(k1) RETURN id(k0) as source, id(k1) as target\', {graph: \'cypher\', write:true})';
+        // Queries iniciais
+        this.communityAlg = 'CALL algo.louvain.stream(\'MATCH (k:Keyword) RETURN id(k) as id\', \'MATCH (k0)-[r]-(k1) RETURN id(k0) as source, id(k1) as target\', {graph: \'cypher\', write:true}) YIELD nodeId MATCH path = (k0)-[r]-(k1) RETURN * LIMIT 1000';
         this.query = 'MATCH path = (k0)-[r]-(k1) RETURN * LIMIT 1000';
 
-        // Fazer requisição geral logo que o componente for criado
-
+        // Controla o seletor de modo de visualização (comunidade ou vizinhos)
         this.filterForm.controls['neighborsNumber'].disable();
         this.filterForm.controls['visualizationType'].valueChanges
             .subscribe(
@@ -43,18 +44,12 @@ export class GraphViewComponent implements OnInit {
                 }
             );
 
-        // this.filterForm.controls['period'].valueChanges
-        //     .pipe(
-        //         tap(() => {
-        //             this.filterForm.controls['keyword'].setValue('');
-        //         })
-        //     ).subscribe();
-
         // Aguarda por mudanças no formulário
         this.filterForm.valueChanges
             .pipe(
                 debounceTime(500),
                 tap(() => {
+                    // Cria um modelo de filtros
                     const communityVisualization = this.filterForm.controls['keyword'].value !== '' &&
                                                     this.formControls['visualizationType'].value == 'community' ? true : false;
                     const neighborsVisualization = this.filterForm.controls['keyword'].value !== '' &&
@@ -93,7 +88,7 @@ export class GraphViewComponent implements OnInit {
                             break;
                     }
 
-                    // Realiza a execução do algoritmo de comunidade para um dado ano
+                    // Constroi o comando para execução do algoritmo de comunidade (Louvain) para um determinado período
                     this.communityAlg = 'CALL algo.louvain(\'MATCH (k:Keyword) RETURN id(k) as id\', \'MATCH (k0)-[r]-(k1) ';
                     
                     if (first && last) {
@@ -102,10 +97,12 @@ export class GraphViewComponent implements OnInit {
 
                     this.communityAlg += 'RETURN id(k0) as source, id(k1) as target\', {graph: \'cypher\', write:true})';
 
+                    // Constroi a query para os filtros especificados
                     this.query = 'MATCH ';
 
                     // Filtra os resultados de acordo com o que foi preenchido
                     if (filters.communityVisualization) {
+                        // this.query += `(k { keyword: '${filters.keyword}' }), `
                         this.query += `(k { keyword: '${filters.keyword}' }), `
                     }
 
@@ -136,6 +133,10 @@ export class GraphViewComponent implements OnInit {
                     }
                     
                     this.query += 'RETURN k0, k1, r';
+
+                    if (!first && !last && filters.keyword === '') {
+                        this.query += ' LIMIT 1000';
+                    }
 
                     console.log(this.communityAlg);
                     console.log(this.query);
