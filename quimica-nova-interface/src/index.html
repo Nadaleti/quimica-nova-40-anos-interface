@@ -55,9 +55,10 @@
 
                 if (recordCount == 0) {
                     document.getElementById('empty-result').style.display = 'block';
+                    document.getElementById('loading').style.display = 'none'
+                } else {
+                    setInterval(() => document.getElementById('loading').style.display = 'none', 10000);
                 }
-
-                document.getElementById('loading').style.display = 'none';
             });
         }
 

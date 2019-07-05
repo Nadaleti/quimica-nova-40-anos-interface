@@ -43,6 +43,14 @@ export class GraphViewComponent implements OnInit {
                 }
             );
 
+        // this.filterForm.controls['period'].valueChanges
+        //     .pipe(
+        //         tap(() => {
+        //             this.filterForm.controls['keyword'].setValue('');
+        //         })
+        //     ).subscribe();
+
+        // Aguarda por mudanças no formulário
         this.filterForm.valueChanges
             .pipe(
                 debounceTime(500),
@@ -81,7 +89,7 @@ export class GraphViewComponent implements OnInit {
                             break;
                         case '5':
                             first = 2016;
-                            last = 2017;
+                            last = 2018;
                             break;
                     }
 
@@ -127,7 +135,7 @@ export class GraphViewComponent implements OnInit {
                         this.query += ` WHERE all(r in relationships(path) WHERE ${first} <= r.year_src <= ${last} AND ${first} <= r.year_dst <= ${last}) `;
                     }
                     
-                    this.query += 'RETURN *';
+                    this.query += 'RETURN k0, k1, r';
 
                     console.log(this.communityAlg);
                     console.log(this.query);

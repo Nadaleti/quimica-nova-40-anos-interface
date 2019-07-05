@@ -53,6 +53,10 @@ hr {
     margin-top: 5px;
 }
 
+#graph-view-card {
+    height: 420px;
+}
+
 #visualization {
     height: 420px;
 }
@@ -63,9 +67,16 @@ hr {
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: #e4e7eb;
     z-index: 2;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    mat-spinner {
+        margin: 0 auto;
+        margin-top: 180px;
+        display: flex !important;
+        align-items: center !important;
+    }
 }
